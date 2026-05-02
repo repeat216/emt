@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="easm.ico">
+    <title>EMT Work - 首页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        html, body {
+            min-height: 100vh;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #1e293b;
+            padding-bottom: 60px;
+        }
+
+        .navbar {
+            width: 100%;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 44px;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            background: none;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: #6366f1;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0.8;
+            white-space: nowrap;
+        }
+
+        .logo span a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 36px;
+        }
+
+        .nav-center a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #6366f1;
+            transition: width 0.3s ease;
+        }
+
+        .nav-center a:hover {
+            color: #6366f1;
+        }
+
+        .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 50%;
+            background: rgba(241, 245, 249, 0.5);
+            border: none;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(226, 232, 240, 0.7);
+            transform: scale(1.05);
+        }
+
+        .user-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: rgba(241, 245, 249, 0.4);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+
+        .username {
+            color: #1e293b;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .dropdown-arrow {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #94a3b8;
+            transition: transform 0.25s ease;
+        }
+
+        .dropdown-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 230px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            font-size: 15px;
+            color: #334155;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(241, 245, 249, 0.5);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+            color: #ef4444;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(241, 245, 249, 0.6);
+        }
+
+        .dropdown-item svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .login-register {
+            display: flex;
+            gap: 12px;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 9px 24px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .register-btn {
+            background: transparent;
+            color: #6366f1;
+            border: 1.5px solid #6366f1;
+            padding: 9px 24px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .register-btn:hover {
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 44px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
+            padding: 28px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .account-status {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .free-status {
+            background: rgba(250, 204, 21, 0.12);
+            color: #ca8a04;
+        }
+
+        .svip-status {
+            background: rgba(139, 92, 246, 0.12);
+            color: #7c3aed;
+        }
+
+        .account-desc {
+            font-size: 13px;
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .content-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 28px;
+        }
+
+        .my-software {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
+            padding: 32px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .to-download {
+            background: rgba(241, 245, 249, 0.5);
+            color: #475569;
+            padding: 7px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .to-download:hover {
+            background: rgba(226, 232, 240, 0.7);
+        }
+
+        .software-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 14px;
+            background: rgba(248, 250, 252, 0.5);
+            border: 1px solid rgba(241, 245, 249, 0.4);
+        }
+
+        .software-item:hover {
+            background: rgba(241, 245, 249, 0.6);
+            transform: translateX(4px);
+        }
+
+        .software-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .software-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+
+        .software-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.2);
+        }
+
+        .account-info {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
+            padding: 32px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            height: fit-content;
+        }
+
+        .account-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 28px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(241, 245, 249, 0.5);
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        .user-level {
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .level-normal {
+            background: rgba(250, 204, 21, 0.12);
+            color: #ca8a04;
+        }
+
+        .level-svip {
+            background: rgba(139, 92, 246, 0.12);
+            color: #7c3aed;
+        }
+
+        .software-list {
+            display: block;
+        }
+
+        .fortune-page {
+            display: none;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            padding: 70px 50px;
+            border-radius: 28px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .fortune-username {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 50px;
+        }
+
+        .fortune-result {
+            font-size: 96px;
+            font-weight: 700;
+            margin-bottom: 60px;
+            letter-spacing: 0.02em;
+        }
+
+        .fortune-result.ji {
+            color: #e11d48;
+        }
+
+        .fortune-result.ping {
+            color: #16a34a;
+        }
+
+        .fortune-result.xiong {
+            color: #1e293b;
+        }
+
+        .fortune-result::before,
+        .fortune-result::after {
+            content: "•";
+            margin: 0 28px;
+            opacity: 0.2;
+        }
+
+        .back-btn {
+            padding: 12px 32px;
+            background: #64748b;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: 0 4px 14px rgba(100, 116, 139, 0.15);
+        }
+
+        .back-btn:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(20px);
+            width: 90%;
+            max-width: 500px;
+            padding: 48px 44px;
+            border-radius: 28px;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 28px;
+            color: #0f172a;
+        }
+
+        .modal-content {
+            text-align: left;
+            line-height: 2;
+            font-size: 15px;
+            color: #334155;
+            margin-bottom: 36px;
+        }
+
+        .modal-btn {
+            padding: 12px 36px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.18);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.22);
+        }
+
+        .recent-update {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
+            padding: 32px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 40px;
+        }
+
+        .update-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+
+        .update-content {
+            line-height: 2;
+            font-size: 15px;
+            color: #334155;
+        }
+
+        /* ========== 深色模式 ========== */
+        body.dark {
+            background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+            color: #ffffff;
+        }
+
+        body.dark .navbar {
+            background: rgba(20, 20, 20, 0.8);
+            border-bottom: 1px solid #33291a;
+        }
+
+        body.dark .stat-card,
+        body.dark .my-software,
+        body.dark .account-info,
+        body.dark .recent-update,
+        body.dark .fortune-page,
+        body.dark .modal-box,
+        body.dark .dropdown-menu {
+            background: rgba(22, 22, 22, 0.7);
+            border-color: #4a3c28;
+        }
+
+        body.dark .software-item {
+            background: rgba(30, 30, 30, 0.6);
+            border-color: #443825;
+        }
+
+        body.dark .stat-title,
+        body.dark .info-label,
+        body.dark .software-name,
+        body.dark .section-title,
+        body.dark .account-title,
+        body.dark .update-title,
+        body.dark .modal-title,
+        body.dark .dropdown-item,
+        body.dark .stat-value,
+        body.dark .info-value,
+        body.dark .username,
+        body.dark .update-content {
+            color: #ffffff !important;
+        }
+
+        body.dark .info-row {
+            border-color: #443825;
+        }
+
+        body.dark .theme-toggle {
+            background: #2a2215;
+            color: #d4af37;
+        }
+
+        body.dark .user-dropdown {
+            background: #251e11;
+            border-color: #59472c;
+        }
+
+        body.dark .register-btn {
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+        body.dark .register-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        body.dark .to-download {
+            background: #2a2215;
+            color: #d4af37;
+        }
+
+        body.dark .logo {
+            background: linear-gradient(135deg, #d4af37, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.dark .logo span {
+            color: #d4af37 !important;
+        }
+
+        body.dark .nav-center a {
+            color: #b0a07d;
+        }
+
+        body.dark .nav-center a:hover {
+            color: #ffd700;
+        }
+
+        body.dark .nav-center a::after {
+            background: #d4af37;
+        }
+
+        body.dark .avatar {
+            background: linear-gradient(135deg, #d4af37, #ffc107);
+            color: #121212;
+        }
+        body.dark .software-icon {
+            background: linear-gradient(135deg, #d4af37, #ffc107);
+            color: #121212;
+        }
+        body.dark .login-btn,
+        body.dark .download-btn,
+        body.dark .modal-btn {
+            background: linear-gradient(135deg, #d4af37, #ffc107);
+            color: #121212;
+        }
+        body.dark .back-btn {
+            background: #4a3c28;
+            color: #f5e7c3;
+        }
+        body.dark .fortune-username {
+            background: linear-gradient(135deg, #d4af37, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+<div id="noticeModal" style="display: none;">
+    <div class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-title">系统公告</div>
+            <div class="modal-content">
+                5.1更新内容：<br>
+                1. 更新了后量子加密程序v1.1.3<br>
+                2. 优化界面交互体验<br>
+                3. 修复已知bug<br>
+                4. 新增深色模式切换
+            </div>
+            <button class="modal-btn" id="closeNoticeBtn">我已知晓</button>
+        </div>
+    </div>
+</div>
+
+<div class="navbar">
+    <div class="logo">
+        EMT Work
+        <span><a href="https://www.hgn.dpdns.org" target="_blank">合作商：HGN</a></span>
+    </div>
+    
+    <div class="nav-center">
+        <a href="index.html">主页</a>
+        <a href="javascript:void(0)" id="otherDomain">其他域</a>
+        <a href="contact.html">联系我们</a>
+    </div>
+    
+    <div class="user-area">
+        <button class="theme-toggle" id="themeBtn">☀️</button>
+        
+        <div id="loggedIn" style="display: none;">
+            <div class="user-dropdown" id="userDropdown">
+                <div class="avatar" id="avatar"></div>
+                <span class="username" id="usernameText"></span>
+                <div class="dropdown-arrow" id="dropdownArrow"></div>
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <div class="dropdown-item" id="logoutItem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1-2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    退出登录
+                </div>
+            </div>
+        </div>
+
+        <div class="login-register" id="loginRegister" style="display: none;">
+            <a href="login.html" class="login-btn">登录</a>
+            <a href="register.html" class="register-btn">注册</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-title">可用软件</div>
+            <div class="stat-value">3</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">下载次数</div>
+            <div class="stat-value" id="downloadCount">--</div>
+            <div class="account-desc">本月统计</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">账号状态</div>
+            <div class="account-status" id="accountStatus">未登录</div>
+            <div class="account-desc" id="statusDesc">请登录后查看</div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="my-software">
+            <div class="section-header">
+                <div class="section-title">我的软件</div>
+                <a href="user.html" class="to-download">前往下载中心</a>
+            </div>
+            <div class="software-list" id="softwareList">
+                <div class="software-item">
+                    <div class="software-info">
+                        <div class="software-icon">M</div>
+                        <div class="software-name">MINGW最新版本</div>
+                    </div>
+                    <a href="user.html" class="download-btn">前往</a>
+                </div>
+                <div class="software-item">
+                    <div class="software-info">
+                        <div class="software-icon">K</div>
+                        <div class="software-name">后量子加密程序</div>
+                    </div>
+                    <a href="user.html" class="download-btn">前往</a>
+                </div>
+                <div class="software-item">
+                    <div class="software-info">
+                        <div class="software-icon">🎐</div>
+                        <div class="software-name">今日运势</div>
+                    </div>
+                    <button class="download-btn" id="fortuneBtn">前往</button>
+                </div>
+            </div>
+            <div class="fortune-page" id="fortunePage">
+                <div class="fortune-username" id="fortuneUsername">EMT Work 运势</div>
+                <div class="fortune-result" id="fortuneResult">中吉</div>
+                <button class="back-btn" id="backFortuneBtn">返回软件列表</button>
+            </div>
+        </div>
+
+        <div class="account-info">
+            <div class="account-title">账户信息</div>
+            <div class="info-row">
+                <div class="info-label">用户名</div>
+                <div class="info-value" id="infoUsername">-</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">用户类型</div>
+                <div class="info-value" id="userType"><span class="user-level level-normal">未登录</span></div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">注册时间</div>
+                <div class="info-value" id="regTime">-</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="recent-update" id="recentUpdate" style="display: none;">
+        <div class="update-title">最近更新</div>
+        <div class="update-content">
+            5.1更新内容：<br>
+                1. 更新了后量子加密程序v1.1.3<br>
+                2. 优化界面交互体验<br>
+                3. 修复已知bug<br>
+                4. 新增深色模式切换
+        </div>
+    </div>
+</div>
+
+<script>
+    const themeBtn = document.getElementById('themeBtn');
+
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark');
+        themeBtn.textContent = isDark ? '🌙' : '☀️';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    const fortunes = ["大吉", "中吉", "小吉", "中平", "凶", "大凶"];
+    function getToday() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    function hasFortuneToday() {
+        const today = getToday();
+        const saved = localStorage.getItem("fortuneData");
+        return saved ? JSON.parse(saved).date === today : false;
+    }
+    function saveFortune(result) {
+        localStorage.setItem("fortuneData", JSON.stringify({ date: getToday(), result }));
+    }
+    function getSavedFortune() {
+        const saved = localStorage.getItem("fortuneData");
+        return saved ? JSON.parse(saved).result : null;
+    }
+    function setFortuneColor(result) {
+        const el = document.getElementById("fortuneResult");
+        el.className = "fortune-result";
+        if (result.includes("吉")) el.classList.add("ji");
+        else if (result === "中平") el.classList.add("ping");
+        else if (result.includes("凶")) el.classList.add("xiong");
+    }
+    function showFortune() {
+        document.getElementById("softwareList").style.display = "none";
+        document.getElementById("fortunePage").style.display = "block";
+        document.querySelector(".account-info").style.display = "none";
+        
+        const username = localStorage.getItem("username");
+        document.getElementById("fortuneUsername").textContent = username + " 的今日运势";
+        
+        let result = hasFortuneToday() ? getSavedFortune() : fortunes[Math.floor(Math.random()*fortunes.length)];
+        if (!hasFortuneToday()) saveFortune(result);
+        document.getElementById("fortuneResult").textContent = result;
+        setFortuneColor(result);
+    }
+    function hideFortune() {
+        document.getElementById("fortunePage").style.display = "none";
+        document.getElementById("softwareList").style.display = "block";
+        document.querySelector(".account-info").style.display = "block";
+    }
+
+    function closeNotice() {
+        document.getElementById("noticeModal").style.display = "none";
+        localStorage.setItem("hasSeenNotice", "true");
+        document.getElementById("recentUpdate").style.display = "block";
+    }
+
+    function generateAvatar(username) {
+        if (!username) return "U";
+        const c = username.charAt(0).toUpperCase();
+        return /^[0-9]$/.test(c) ? `#${c}` : c;
+    }
+
+    function logout() {
+        localStorage.removeItem("isLogin");
+        localStorage.removeItem("username");
+        window.location.href = "home.html";
+    }
+
+    function initDropdown() {
+        const dropdown = document.getElementById("userDropdown");
+        const menu = document.getElementById("dropdownMenu");
+        const arrow = document.getElementById("dropdownArrow");
+        dropdown.addEventListener("click", e => { e.stopPropagation(); menu.classList.toggle("show"); arrow.classList.toggle("open"); });
+        document.getElementById("logoutItem").addEventListener("click", logout);
+        document.addEventListener("click", () => { menu.classList.remove("show"); arrow.classList.remove("open"); });
+    }
+
+    document.getElementById('otherDomain').addEventListener('click', function(e) {
+        e.preventDefault();
+        const host = window.location.host;
+        if (host === 'emt.dpdns.org') {
+            window.open('https://easmtools.dpdns.org', '_blank');
+        } else if (host === 'easmtools.dpdns.org') {
+            window.open('https://emt.dpdns.org', '_blank');
+        } else {
+            window.open('https://emt.dpdns.org', '_blank');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark');
+            themeBtn.textContent = '🌙';
+        } else {
+            document.body.classList.remove('dark');
+            themeBtn.textContent = '☀️';
+            if (!savedTheme) {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        themeBtn.addEventListener('click', toggleTheme);
+
+        document.getElementById('closeNoticeBtn').addEventListener('click', closeNotice);
+        document.getElementById('fortuneBtn').addEventListener('click', showFortune);
+        document.getElementById('backFortuneBtn').addEventListener('click', hideFortune);
+
+        const isLogin = localStorage.getItem("isLogin") === "true";
+        const username = localStorage.getItem("username");
+        const hasSeenNotice = localStorage.getItem("hasSeenNotice") === "true";
+        const regTime = localStorage.getItem("regTime");
+
+        if (isLogin && username) {
+            // 已登录：显示用户信息
+            if (!hasSeenNotice) {
+                document.getElementById("noticeModal").style.display = "block";
+            } else {
+                document.getElementById("recentUpdate").style.display = "block";
+            }
+
+            document.getElementById("downloadCount").textContent = localStorage.getItem("downloadCount") || "0";
+            document.getElementById("loggedIn").style.display = "block";
+            document.getElementById("loginRegister").style.display = "none";
+            
+            document.getElementById("avatar").textContent = generateAvatar(username);
+            document.getElementById("usernameText").textContent = username;
+            document.getElementById("infoUsername").textContent = username;
+            document.getElementById("regTime").textContent = regTime || "获取中...";
+
+            if (username === "galgame") {
+                document.getElementById("accountStatus").className = "account-status svip-status";
+                document.getElementById("accountStatus").textContent = "SVIP";
+                document.getElementById("statusDesc").textContent = "您是尊贵的SVIP用户！";
+                document.getElementById("userType").innerHTML = '<span class="user-level level-svip">管理员</span>';
+            } else {
+                document.getElementById("accountStatus").className = "account-status free-status";
+                document.getElementById("accountStatus").textContent = "免费版";
+                document.getElementById("statusDesc").textContent = "永久免费";
+                document.getElementById("userType").innerHTML = '<span class="user-level level-normal">普通用户</span>';
+            }
+            initDropdown();
+        } else {
+            // 未登录：显示登录/注册按钮
+            document.getElementById("loginRegister").style.display = "flex";
+            document.getElementById("loggedIn").style.display = "none";
+            document.getElementById("recentUpdate").style.display = "block";
+        }
+    });
+</script>
+</body>
+</html>
